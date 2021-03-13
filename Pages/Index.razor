@@ -1,0 +1,11 @@
+﻿@page "/"
+
+@if(players!=null) {
+    <ul>
+    @foreach(var player in players) {
+        <li>@player.Name</li>
+    }
+    </ul>
+} else {
+    <p>Loading</p>
+}
