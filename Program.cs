@@ -21,6 +21,7 @@ namespace PerformanceClient
             builder.Services.AddScoped<IPlayerService, PlayerService>();
             builder.Services.AddScoped<IStatisticsService, StatisticsService>();
             builder.Services.AddScoped<IBossService, BossService>();
+            builder.Services.AddScoped<IMeasureService, MeasureService>();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:8080") });
 
             await builder.Build().RunAsync();

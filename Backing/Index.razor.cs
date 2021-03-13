@@ -19,12 +19,16 @@ namespace PerformanceClient.Pages
         [Inject]
         private IBossService bossService { get; set; }
 
+        [Inject]
+        private IMeasureService measureService { get; set; }
+
         private List<Player> players;
         private Statistics statistics;
-
         private List<Boss> bosses;
+        private List<Measure> measures;
 
         public string BossId { get; set; }
+        public MeasureType MeasureType {get;set;}
 
         protected override async Task OnInitializedAsync()
         {
@@ -33,6 +37,7 @@ namespace PerformanceClient.Pages
 
             players = await playerService.GetPlayers();
             statistics = await statisticsService.GetStatistics();
+            measures = await measureService.GetMeasures();
         }
 
         public PlayerStatistics GetStatistics(int playerId)
@@ -50,8 +55,9 @@ namespace PerformanceClient.Pages
             return new PlayerStatistics();
         }
 
-        public List<String> GetHeaders() {
-            return statistics.Data.SelectMany(s=>s.Data.Keys).Distinct().ToList();
+        public List<String> GetHeaders()
+        {
+            return measures.Where(m=>m.Type==MeasureType.BASIC).Select(m=>m.Name).ToList();
         }
 
         public async void BossChanged(ChangeEventArgs e)
