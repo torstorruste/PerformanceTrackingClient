@@ -28,7 +28,7 @@ namespace PerformanceClient.Pages
         private List<Measure> measures;
 
         public string BossId { get; set; }
-        public MeasureType MeasureType {get;set;}
+        public MeasureType MeasureType { get; set; } = MeasureType.BASIC;
 
         protected override async Task OnInitializedAsync()
         {
@@ -57,7 +57,34 @@ namespace PerformanceClient.Pages
 
         public List<String> GetHeaders()
         {
-            return measures.Where(m=>m.Type==MeasureType.BASIC).Select(m=>m.Name).ToList();
+            return measures.Where(m => m.Type == MeasureType).Select(m => m.Name).Where(h => HasValue(h)).ToList();
+        }
+
+        public bool HasValue(String header)
+        {
+            foreach (var data in statistics.Data)
+            {
+                if(data.Data.ContainsKey(header)) return true;
+            }
+            return false;
+        }
+
+        public bool HasValue(PlayerStatistics playerStatistics, String header)
+        {
+            return playerStatistics.Data.ContainsKey(header);
+        }
+
+        public int GetValue(PlayerStatistics playerStatistics, string header) {
+            return playerStatistics.Data[header];
+        }
+
+        public double GetValuePerEncounter(PlayerStatistics playerStatistics, string header) {
+            int numEncounters = playerStatistics.Data["Farm"] + playerStatistics.Data["Progress"];
+            int value = playerStatistics.Data[header];
+
+            double result = ((double)value)/numEncounters;
+
+            return Math.Round(result, 2);
         }
 
         public async void BossChanged(ChangeEventArgs e)
@@ -72,6 +99,13 @@ namespace PerformanceClient.Pages
             {
                 statistics = await statisticsService.GetStatistics();
             }
+            StateHasChanged();
+        }
+
+        public async void MeasureChanged(ChangeEventArgs e)
+        {
+            MeasureType = (MeasureType)Enum.Parse(typeof(MeasureType), e.Value.ToString().ToUpper());
+
             StateHasChanged();
         }
     }

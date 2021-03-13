@@ -7,24 +7,40 @@
             <option value="@boss.Id">@boss.Name</option>
         }
     </select>
+
+    <select @onchange="MeasureChanged">
+        <option>Basic</option>
+        <option>Defensive</option>
+        <option>Mechanic</option>
+        <option>Healing</option>
+    </select>
 }
 
 @if(players!=null) {
     <table>
         <tr><th>Name</th><th>Farm</th><th>Progress</th>
         @foreach(var header in GetHeaders()) {
-            <th>@header</th>
+            <th colspan="2">@header</th>
+        }
+        </tr>
+        <tr><th></th><th></th><th></th>
+        @foreach(var header in GetHeaders()) {
+            <th>Total</th>
+            <th>Per fight</th>
         }
         </tr>
     @foreach(var player in players) {
         var statistics = GetStatistics(player.Id);
         if(statistics != null && statistics.Data != null && statistics.Data.ContainsKey("Farm")) {
-            <tr><td>@player.Name</td><td>@statistics.Data["Farm"]</td><td>@statistics.Data["Progress"]</td>
-            
+            <tr><td>@player.Name</td>
+            <td>@GetValue(statistics, "Farm")</td>
+            <td>@GetValue(statistics, "Progress")</td>
             @foreach(var header in GetHeaders()) {
                 @if(statistics.Data.ContainsKey(header)) {
-                    <td>@statistics.Data[@header]</td>
+                    <td>@GetValue(statistics, header)</td>
+                    <td>@GetValuePerEncounter(statistics, header)</td>
                 } else {
+                    <td></td>
                     <td></td>
                 }
             }
