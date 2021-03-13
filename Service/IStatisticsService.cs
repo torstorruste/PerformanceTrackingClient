@@ -6,5 +6,7 @@ namespace PerformanceClient.Service
 {
     public interface IStatisticsService {
         Task<Statistics> GetStatistics();
+
+        Task<Statistics> GetStatisticsByBoss(int bossId);
     }
 }

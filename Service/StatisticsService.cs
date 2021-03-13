@@ -31,5 +31,22 @@ namespace PerformanceClient.Service
 
             return statistics;
         }
+
+        public async Task<Statistics> GetStatisticsByBoss(int bossId)
+        {
+            Console.WriteLine("StatisticsService::GetStatisticsByBoss");
+
+            Console.WriteLine($"GETing bosses/{bossId}/statistics");
+            var result = await httpClient.GetAsync($"bosses/{bossId}/statistics");
+            result.EnsureSuccessStatusCode();
+
+            var json = await result.Content.ReadAsStringAsync();
+            Console.WriteLine("Server replied");
+            var statistics = JsonConvert.DeserializeObject<Statistics>(json);
+
+            Console.WriteLine($"Fetched statistics");
+
+            return statistics;
+        }
     }
 }

@@ -1,12 +1,20 @@
 ﻿@page "/"
 
+@if(bosses!=null) {
+    <select @onchange="@BossChanged">
+        <option value="-1">Select boss</option>
+        @foreach(var boss in bosses) {
+            <option value="@boss.Id">@boss.Name</option>
+        }
+    </select>
+}
+
 @if(players!=null) {
     <table>
         <tr><th>Name</th><th>Farm</th><th>Progress</th></tr>
     @foreach(var player in players) {
         var statistics = GetStatistics(player.Id);
-        Console.WriteLine(string.Join(", ", statistics.Data.Keys));
-        if(statistics.Data.ContainsKey("Farm")) {
+        if(statistics != null && statistics.Data != null && statistics.Data.ContainsKey("Farm")) {
             <tr><td>@player.Name</td><td>@statistics.Data["Farm"]</td><td>@statistics.Data["Progress"]</td></tr>
         }
     }

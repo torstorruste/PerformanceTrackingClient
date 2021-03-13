@@ -15,19 +15,31 @@ namespace PerformanceClient.Pages
         [Inject]
         private IStatisticsService statisticsService { get; set; }
 
+        [Inject]
+        private IBossService bossService { get; set; }
+
         private List<Player> players;
         private Statistics statistics;
 
+        private List<Boss> bosses;
+
+        public string BossId { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
+            Console.WriteLine("OnInitializedAsync");
+            bosses = await bossService.GetBosses();
+
             players = await playerService.GetPlayers();
             statistics = await statisticsService.GetStatistics();
         }
 
         public PlayerStatistics GetStatistics(int playerId)
         {
-            foreach(var data in statistics.Data) {
-                if(data.Player.Id==playerId) {
+            foreach (var data in statistics.Data)
+            {
+                if (data.Player.Id == playerId)
+                {
                     Console.WriteLine($"Found data for player {data.Player.Name}");
                     return data;
                 }
@@ -35,6 +47,21 @@ namespace PerformanceClient.Pages
 
             Console.WriteLine($"Unable to find statistics for player {playerId}");
             return new PlayerStatistics();
+        }
+
+        public async void BossChanged(ChangeEventArgs e)
+        {
+            BossId = e.Value.ToString();
+            Console.WriteLine($"Boss changed to {BossId}");
+            if (BossId != null && BossId != "-1")
+            {
+                statistics = await statisticsService.GetStatisticsByBoss(int.Parse(BossId));
+            }
+            else
+            {
+                statistics = await statisticsService.GetStatistics();
+            }
+            StateHasChanged();
         }
     }
 }
