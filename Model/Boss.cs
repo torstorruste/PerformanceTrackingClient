@@ -1,10 +1,9 @@
 namespace PerformanceClient.Model
 {
-    public class Player
+    public class Boss
     {
         public int Id { get; set; }
+        
         public string Name { get; set; }
-
-        public string Class { get; set; }
     }
 }

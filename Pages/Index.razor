@@ -1,11 +1,16 @@
 ﻿@page "/"
 
 @if(players!=null) {
-    <ul>
+    <table>
+        <tr><th>Name</th><th>Farm</th><th>Progress</th></tr>
     @foreach(var player in players) {
-        <li>@player.Name</li>
+        var statistics = GetStatistics(player.Id);
+        Console.WriteLine(string.Join(", ", statistics.Data.Keys));
+        if(statistics.Data.ContainsKey("Farm")) {
+            <tr><td>@player.Name</td><td>@statistics.Data["Farm"]</td><td>@statistics.Data["Progress"]</td></tr>
+        }
     }
-    </ul>
+    </table>
 } else {
     <p>Loading</p>
 }

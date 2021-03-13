@@ -21,7 +21,7 @@ namespace PerformanceClient.Service
         {
             Console.WriteLine("PlayerService::GetPlayers");
 
-            Console.WriteLine("GETing to rest/players");
+            Console.WriteLine("GETing players");
             var result = await httpClient.GetAsync("players");
             result.EnsureSuccessStatusCode();
 
