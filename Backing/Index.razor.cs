@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using PerformanceClient.Model;
@@ -47,6 +48,10 @@ namespace PerformanceClient.Pages
 
             Console.WriteLine($"Unable to find statistics for player {playerId}");
             return new PlayerStatistics();
+        }
+
+        public List<String> GetHeaders() {
+            return statistics.Data.SelectMany(s=>s.Data.Keys).Distinct().ToList();
         }
 
         public async void BossChanged(ChangeEventArgs e)
