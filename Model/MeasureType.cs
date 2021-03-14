@@ -5,6 +5,7 @@ namespace PerformanceClient.Model
         MECHANIC,
         BASIC,
         HEALING,
-        ENCOUNTER
+        ENCOUNTER,
+        RANKING
     }
 }

@@ -22,7 +22,8 @@ namespace PerformanceClient
             builder.Services.AddScoped<IStatisticsService, StatisticsService>();
             builder.Services.AddScoped<IBossService, BossService>();
             builder.Services.AddScoped<IMeasureService, MeasureService>();
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://tor.superhelt.org:8080/performance/") });
+            builder.Services.AddScoped<IRankingService, RankingService>();
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:8080/performance/") });
 
             await builder.Build().RunAsync();
         }

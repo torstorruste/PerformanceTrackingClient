@@ -22,12 +22,16 @@ namespace PerformanceClient.Pages
         [Inject]
         private IMeasureService measureService { get; set; }
 
+        [Inject]
+        private IRankingService rankingService { get; set; }
+
         private List<Player> players;
         private Statistics statistics;
         private List<Boss> bosses;
         private List<Measure> measures;
+        private List<Ranking> rankings;
 
-        public string BossId { get; set; }
+        public string BossId { get; set; } = "-1";
         public MeasureType MeasureType { get; set; } = MeasureType.BASIC;
 
         protected override async Task OnInitializedAsync()
@@ -38,6 +42,7 @@ namespace PerformanceClient.Pages
             players = await playerService.GetPlayers();
             statistics = await statisticsService.GetStatistics();
             measures = await measureService.GetMeasures();
+            rankings = await rankingService.GetRankings();
         }
 
         public PlayerStatistics GetStatistics(int playerId)
@@ -64,7 +69,7 @@ namespace PerformanceClient.Pages
         {
             foreach (var data in statistics.Data)
             {
-                if(data.Data.ContainsKey(header)) return true;
+                if (data.Data.ContainsKey(header)) return true;
             }
             return false;
         }
@@ -74,17 +79,57 @@ namespace PerformanceClient.Pages
             return playerStatistics.Data.ContainsKey(header);
         }
 
-        public int GetValue(PlayerStatistics playerStatistics, string header) {
+        public int GetValue(PlayerStatistics playerStatistics, string header)
+        {
             return playerStatistics.Data[header];
         }
 
-        public double GetValuePerEncounter(PlayerStatistics playerStatistics, string header) {
+        public double GetValuePerEncounter(PlayerStatistics playerStatistics, string header)
+        {
             int numEncounters = playerStatistics.Data["Farm"] + playerStatistics.Data["Progress"];
             int value = playerStatistics.Data[header];
 
-            double result = ((double)value)/numEncounters;
+            double result = ((double)value) / numEncounters;
 
             return Math.Round(result, 2);
+        }
+
+        public int? GetMinDPS(Player player) {
+            var rankings = this.rankings.Where(r=>r.Player.Id==player.Id).ToList();
+            if(BossId != null && BossId!="-1") {
+                rankings = rankings.Where(r=>r.Boss.Id==int.Parse(BossId)).ToList();
+            }
+
+            if(rankings.Count>0) {
+                return rankings.Min(r=>r.rank);
+            } else {
+                return null;
+            }
+        }
+
+        public double? GetAverageDPS(Player player) {
+            var rankings = this.rankings.Where(r=>r.Player.Id==player.Id).ToList();
+            if(BossId != null && BossId!="-1") {
+                rankings = rankings.Where(r=>r.Boss.Id==int.Parse(BossId)).ToList();
+            }
+            if(rankings.Count>0) {
+                return Math.Round(rankings.Average(r=>r.rank), 2);
+            } else {
+                return null;
+            }
+        }
+
+        public int? GetMaxDPS(Player player) {
+            var rankings = this.rankings.Where(r=>r.Player.Id==player.Id).ToList();
+            if(BossId != null && BossId!="-1") {
+                rankings = rankings.Where(r=>r.Boss.Id==int.Parse(BossId)).ToList();
+            }
+
+            if(rankings.Count>0) {
+                return rankings.Max(r=>r.rank);
+            } else {
+                return null;
+            }
         }
 
         public async void BossChanged(ChangeEventArgs e)

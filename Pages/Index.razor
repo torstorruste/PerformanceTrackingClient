@@ -13,6 +13,7 @@
         <option>Defensive</option>
         <option>Mechanic</option>
         <option>Healing</option>
+        <option>Ranking</option>
     </select>
 }
 
@@ -22,11 +23,19 @@
         @foreach(var header in GetHeaders()) {
             <th colspan="2">@header</th>
         }
+        @if(MeasureType==Model.MeasureType.RANKING) {
+            <th colspan="3">DPS</th>
+        }
         </tr>
         <tr><th></th><th></th><th></th>
         @foreach(var header in GetHeaders()) {
             <th>Total</th>
             <th>Per fight</th>
+        }
+        @if(MeasureType==Model.MeasureType.RANKING) {
+            <th>Min</th>
+            <th>Average</th>
+            <th>Max</th>
         }
         </tr>
     @foreach(var player in players) {
@@ -43,6 +52,11 @@
                     <td></td>
                     <td></td>
                 }
+            }
+            @if(MeasureType==Model.MeasureType.RANKING) {
+                <td>@GetMinDPS(player)</td>
+                <td>@GetAverageDPS(player)</td>
+                <td>@GetMaxDPS(player)</td>
             }
             
             </tr>
