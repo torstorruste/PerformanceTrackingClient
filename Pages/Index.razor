@@ -25,6 +25,7 @@
         }
         @if(MeasureType==Model.MeasureType.RANKING) {
             <th colspan="3">DPS</th>
+            <th colspan="3">HPS</th>
         }
         </tr>
         <tr><th></th><th></th><th></th>
@@ -33,6 +34,9 @@
             <th>Per fight</th>
         }
         @if(MeasureType==Model.MeasureType.RANKING) {
+            <th>Min</th>
+            <th>Average</th>
+            <th>Max</th>
             <th>Min</th>
             <th>Average</th>
             <th>Max</th>
@@ -54,9 +58,12 @@
                 }
             }
             @if(MeasureType==Model.MeasureType.RANKING) {
-                <td>@GetMinDPS(player)</td>
-                <td>@GetAverageDPS(player)</td>
-                <td>@GetMaxDPS(player)</td>
+                <td>@GetMinRank(player, Model.RankingType.DPS)</td>
+                <td>@GetAverageRank(player, Model.RankingType.DPS)</td>
+                <td>@GetMaxRank(player, Model.RankingType.DPS)</td>
+                <td>@GetMinRank(player, Model.RankingType.HPS)</td>
+                <td>@GetAverageRank(player, Model.RankingType.HPS)</td>
+                <td>@GetMaxRank(player, Model.RankingType.HPS)</td>
             }
             
             </tr>

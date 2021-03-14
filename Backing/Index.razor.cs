@@ -94,11 +94,15 @@ namespace PerformanceClient.Pages
             return Math.Round(result, 2);
         }
 
-        public int? GetMinDPS(Player player) {
-            var rankings = this.rankings.Where(r=>r.Player.Id==player.Id).ToList();
-            if(BossId != null && BossId!="-1") {
-                rankings = rankings.Where(r=>r.Boss.Id==int.Parse(BossId)).ToList();
-            }
+        private List<Ranking> GetRankings(int playerId, RankingType rankingType) {
+            if(BossId==null || BossId=="-1")
+                return this.rankings.Where(r=>r.Player.Id==playerId && r.rankingType==rankingType).ToList();
+            else
+                return this.rankings.Where(r=>r.Player.Id==playerId && r.Boss.Id==int.Parse(BossId) && r.rankingType==rankingType).ToList();
+        }
+
+        public int? GetMinRank(Player player, RankingType rankingType) {
+            var rankings = GetRankings(player.Id, rankingType);
 
             if(rankings.Count>0) {
                 return rankings.Min(r=>r.rank);
@@ -107,11 +111,8 @@ namespace PerformanceClient.Pages
             }
         }
 
-        public double? GetAverageDPS(Player player) {
-            var rankings = this.rankings.Where(r=>r.Player.Id==player.Id).ToList();
-            if(BossId != null && BossId!="-1") {
-                rankings = rankings.Where(r=>r.Boss.Id==int.Parse(BossId)).ToList();
-            }
+        public double? GetAverageRank(Player player, RankingType  rankingType) {
+            var rankings = GetRankings(player.Id, rankingType);
             if(rankings.Count>0) {
                 return Math.Round(rankings.Average(r=>r.rank), 2);
             } else {
@@ -119,11 +120,8 @@ namespace PerformanceClient.Pages
             }
         }
 
-        public int? GetMaxDPS(Player player) {
-            var rankings = this.rankings.Where(r=>r.Player.Id==player.Id).ToList();
-            if(BossId != null && BossId!="-1") {
-                rankings = rankings.Where(r=>r.Boss.Id==int.Parse(BossId)).ToList();
-            }
+        public int? GetMaxRank(Player player, RankingType rankingType) {
+            var rankings = GetRankings(player.Id, rankingType);
 
             if(rankings.Count>0) {
                 return rankings.Max(r=>r.rank);
