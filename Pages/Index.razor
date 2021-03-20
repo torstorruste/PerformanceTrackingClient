@@ -19,9 +19,9 @@
 
 @if(players!=null) {
     <table>
-        <tr><th colspan="2">Name</th><th>Farm</th><th>Progress</th>
+        <tr><th colspan="2" @onclick="SortByName">Name</th><th @onclick="SortByFarm">Farm</th><th @onclick="SortByProgress">Progress</th>
         @foreach(var header in GetHeaders()) {
-            <th colspan="2">@header</th>
+            <th colspan="2" @onclick="()=>Sort(header)">@header</th>
         }
         @if(MeasureType==Model.MeasureType.RANKING) {
             <th colspan="3">DPS</th>

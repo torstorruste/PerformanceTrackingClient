@@ -34,6 +34,8 @@ namespace PerformanceClient.Pages
         public string BossId { get; set; } = "-1";
         public MeasureType MeasureType { get; set; } = MeasureType.BASIC;
 
+        private string currentSort = "Name";
+
         protected override async Task OnInitializedAsync()
         {
             Console.WriteLine("OnInitializedAsync");
@@ -51,7 +53,6 @@ namespace PerformanceClient.Pages
             {
                 if (data.Player.Id == playerId)
                 {
-                    Console.WriteLine($"Found data for player {data.Player.Name} ({data.Player.Class})");
                     return data;
                 }
             }
@@ -81,13 +82,19 @@ namespace PerformanceClient.Pages
 
         public int GetValue(PlayerStatistics playerStatistics, string header)
         {
-            return playerStatistics.Data[header];
+            if(playerStatistics!=null && playerStatistics.Data!=null) {
+                if(playerStatistics.Data.ContainsKey(header)) {
+                    return playerStatistics.Data[header];
+                } 
+            }
+
+            return 0;
         }
 
         public double GetValuePerEncounter(PlayerStatistics playerStatistics, string header)
         {
-            int numEncounters = playerStatistics.Data["Farm"] + playerStatistics.Data["Progress"];
-            int value = playerStatistics.Data[header];
+            int numEncounters = GetValue(playerStatistics, "Farm") + GetValue(playerStatistics, "Progress");
+            int value = GetValue(playerStatistics, header);
 
             double result = ((double)value) / numEncounters;
 
@@ -142,6 +149,7 @@ namespace PerformanceClient.Pages
             {
                 statistics = await statisticsService.GetStatistics();
             }
+            currentSort = "OldBoss";
             StateHasChanged();
         }
 
@@ -149,6 +157,49 @@ namespace PerformanceClient.Pages
         {
             MeasureType = (MeasureType)Enum.Parse(typeof(MeasureType), e.Value.ToString().ToUpper());
 
+            StateHasChanged();
+        }
+
+        public void Sort(String header) {
+            if(currentSort==null || currentSort!= header) {
+                Console.WriteLine($"Sorting by {header}");
+
+                players = players.OrderBy(p=>GetValuePerEncounter(GetStatistics(p.Id), header))
+                .ThenBy(p=>GetValue(GetStatistics(p.Id), header)).ToList();
+            } else {
+                players.Reverse();
+            }
+            currentSort = header;
+            StateHasChanged();
+        }
+
+        public void SortByName() {
+            if(currentSort!="Name") {
+                players = players.OrderBy(p=>p.Name).ToList();
+            } else {
+                players.Reverse();
+            }
+            currentSort = "Name";
+            StateHasChanged();
+        }
+
+        public void SortByFarm() {
+            if(currentSort!="Farm") {
+                players = players.OrderBy(p=>GetValue(GetStatistics(p.Id), "Farm")).ToList();
+            } else {
+                players.Reverse();
+            }
+            currentSort = "Farm";
+            StateHasChanged();
+        }
+
+        public void SortByProgress() {
+            if(currentSort!="Progress") {
+                players = players.OrderBy(p=>GetValue(GetStatistics(p.Id), "Progress")).ToList();
+            } else {
+                players.Reverse();
+            }
+            currentSort = "Progress";
             StateHasChanged();
         }
     }
