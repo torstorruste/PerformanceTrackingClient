@@ -15,12 +15,12 @@ namespace PerformanceClient.Service
             this.httpClient = httpClient;
         }
 
-        public async Task<Statistics> GetStatistics()
+        public async Task<Statistics> GetStatistics(EncounterType encounterType)
         {
             Console.WriteLine("StatisticsService::GetStatistics");
 
-            Console.WriteLine("GETing statistics");
-            var result = await httpClient.GetAsync("statistics");
+            Console.WriteLine($"GETing statistics?encounterType={encounterType}");
+            var result = await httpClient.GetAsync($"statistics?encounterType={encounterType}");
             result.EnsureSuccessStatusCode();
 
             var json = await result.Content.ReadAsStringAsync();
@@ -32,12 +32,12 @@ namespace PerformanceClient.Service
             return statistics;
         }
 
-        public async Task<Statistics> GetStatisticsByBoss(int bossId)
+        public async Task<Statistics> GetStatisticsByBoss(EncounterType encounterType, int bossId)
         {
             Console.WriteLine("StatisticsService::GetStatisticsByBoss");
 
-            Console.WriteLine($"GETing bosses/{bossId}/statistics");
-            var result = await httpClient.GetAsync($"bosses/{bossId}/statistics");
+            Console.WriteLine($"GETing bosses/{bossId}/statistics?encounterType={encounterType}");
+            var result = await httpClient.GetAsync($"bosses/{bossId}/statistics?encounterType={encounterType}");
             result.EnsureSuccessStatusCode();
 
             var json = await result.Content.ReadAsStringAsync();

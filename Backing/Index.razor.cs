@@ -34,6 +34,8 @@ namespace PerformanceClient.Pages
         public string BossId { get; set; } = "-1";
         public MeasureType MeasureType { get; set; } = MeasureType.BASIC;
 
+        public EncounterType ET { get; set; } = EncounterType.BOTH;
+
         private string currentSort = "Name";
 
         protected override async Task OnInitializedAsync()
@@ -42,7 +44,7 @@ namespace PerformanceClient.Pages
             bosses = await bossService.GetBosses();
 
             players = await playerService.GetPlayers();
-            statistics = await statisticsService.GetStatistics();
+            statistics = await statisticsService.GetStatistics(ET);
             measures = await measureService.GetMeasures();
             rankings = await rankingService.GetRankings();
         }
@@ -82,10 +84,12 @@ namespace PerformanceClient.Pages
 
         public int GetValue(PlayerStatistics playerStatistics, string header)
         {
-            if(playerStatistics!=null && playerStatistics.Data!=null) {
-                if(playerStatistics.Data.ContainsKey(header)) {
+            if (playerStatistics != null && playerStatistics.Data != null)
+            {
+                if (playerStatistics.Data.ContainsKey(header))
+                {
                     return playerStatistics.Data[header];
-                } 
+                }
             }
 
             return 0;
@@ -101,38 +105,51 @@ namespace PerformanceClient.Pages
             return Math.Round(result, 2);
         }
 
-        private List<Ranking> GetRankings(int playerId, RankingType rankingType) {
-            if(BossId==null || BossId=="-1")
-                return this.rankings.Where(r=>r.Player.Id==playerId && r.rankingType==rankingType).ToList();
+        private List<Ranking> GetRankings(int playerId, RankingType rankingType)
+        {
+            if (BossId == null || BossId == "-1")
+                return this.rankings.Where(r => r.Player.Id == playerId && r.rankingType == rankingType).ToList();
             else
-                return this.rankings.Where(r=>r.Player.Id==playerId && r.Boss.Id==int.Parse(BossId) && r.rankingType==rankingType).ToList();
+                return this.rankings.Where(r => r.Player.Id == playerId && r.Boss.Id == int.Parse(BossId) && r.rankingType == rankingType).ToList();
         }
 
-        public int? GetMinRank(Player player, RankingType rankingType) {
+        public int? GetMinRank(Player player, RankingType rankingType)
+        {
             var rankings = GetRankings(player.Id, rankingType);
 
-            if(rankings.Count>0) {
-                return rankings.Min(r=>r.rank);
-            } else {
+            if (rankings.Count > 0)
+            {
+                return rankings.Min(r => r.rank);
+            }
+            else
+            {
                 return null;
             }
         }
 
-        public double? GetAverageRank(Player player, RankingType  rankingType) {
+        public double? GetAverageRank(Player player, RankingType rankingType)
+        {
             var rankings = GetRankings(player.Id, rankingType);
-            if(rankings.Count>0) {
-                return Math.Round(rankings.Average(r=>r.rank), 2);
-            } else {
+            if (rankings.Count > 0)
+            {
+                return Math.Round(rankings.Average(r => r.rank), 2);
+            }
+            else
+            {
                 return null;
             }
         }
 
-        public int? GetMaxRank(Player player, RankingType rankingType) {
+        public int? GetMaxRank(Player player, RankingType rankingType)
+        {
             var rankings = GetRankings(player.Id, rankingType);
 
-            if(rankings.Count>0) {
-                return rankings.Max(r=>r.rank);
-            } else {
+            if (rankings.Count > 0)
+            {
+                return rankings.Max(r => r.rank);
+            }
+            else
+            {
                 return null;
             }
         }
@@ -143,11 +160,11 @@ namespace PerformanceClient.Pages
             Console.WriteLine($"Boss changed to {BossId}");
             if (BossId != null && BossId != "-1")
             {
-                statistics = await statisticsService.GetStatisticsByBoss(int.Parse(BossId));
+                statistics = await statisticsService.GetStatisticsByBoss(ET, int.Parse(BossId));
             }
             else
             {
-                statistics = await statisticsService.GetStatistics();
+                statistics = await statisticsService.GetStatistics(ET);
             }
             currentSort = "OldBoss";
             StateHasChanged();
@@ -160,63 +177,103 @@ namespace PerformanceClient.Pages
             StateHasChanged();
         }
 
-        public void Sort(String header) {
-            if(currentSort==null || currentSort!= header) {
+        public async void EncounterTypeChanged(ChangeEventArgs e)
+        {
+            ET = (EncounterType)Enum.Parse(typeof(EncounterType), e.Value.ToString().ToUpper());
+
+            if (BossId != null && BossId != "-1")
+            {
+                statistics = await statisticsService.GetStatisticsByBoss(ET, int.Parse(BossId));
+            }
+            else
+            {
+                statistics = await statisticsService.GetStatistics(ET);
+            }
+
+            StateHasChanged();
+        }
+
+        public void Sort(String header)
+        {
+            if (currentSort == null || currentSort != header)
+            {
                 Console.WriteLine($"Sorting by {header}");
 
-                players = players.OrderBy(p=>GetValuePerEncounter(GetStatistics(p.Id), header))
-                .ThenBy(p=>GetValue(GetStatistics(p.Id), header)).Reverse().ToList();
-            } else {
+                players = players.OrderBy(p => GetValuePerEncounter(GetStatistics(p.Id), header))
+                .ThenBy(p => GetValue(GetStatistics(p.Id), header)).Reverse().ToList();
+            }
+            else
+            {
                 players.Reverse();
             }
             currentSort = header;
             StateHasChanged();
         }
 
-        public void SortByName() {
-            if(currentSort!="Name") {
-                players = players.OrderBy(p=>p.Name).ToList();
-            } else {
+        public void SortByName()
+        {
+            if (currentSort != "Name")
+            {
+                players = players.OrderBy(p => p.Name).ToList();
+            }
+            else
+            {
                 players.Reverse();
             }
             currentSort = "Name";
             StateHasChanged();
         }
 
-        public void SortByFarm() {
-            if(currentSort!="Farm") {
-                players = players.OrderBy(p=>GetValue(GetStatistics(p.Id), "Farm")).Reverse().ToList();
-            } else {
+        public void SortByFarm()
+        {
+            if (currentSort != "Farm")
+            {
+                players = players.OrderBy(p => GetValue(GetStatistics(p.Id), "Farm")).Reverse().ToList();
+            }
+            else
+            {
                 players.Reverse();
             }
             currentSort = "Farm";
             StateHasChanged();
         }
 
-        public void SortByProgress() {
-            if(currentSort!="Progress") {
-                players = players.OrderBy(p=>GetValue(GetStatistics(p.Id), "Progress")).Reverse().ToList();
-            } else {
+        public void SortByProgress()
+        {
+            if (currentSort != "Progress")
+            {
+                players = players.OrderBy(p => GetValue(GetStatistics(p.Id), "Progress")).Reverse().ToList();
+            }
+            else
+            {
                 players.Reverse();
             }
             currentSort = "Progress";
             StateHasChanged();
         }
 
-        public void SortByDPS() {
-            if(currentSort!="DPS") {
-                players = players.OrderBy(p=>GetAverageRank(p, RankingType.DPS)).Reverse().ToList();
-            } else {
+        public void SortByDPS()
+        {
+            if (currentSort != "DPS")
+            {
+                players = players.OrderBy(p => GetAverageRank(p, RankingType.DPS)).Reverse().ToList();
+            }
+            else
+            {
                 players.Reverse();
             }
             currentSort = "DPS";
             StateHasChanged();
         }
 
-        public void SortByHPS() {
-            if(currentSort!="HPS") {
-                players = players.OrderBy(p=>GetAverageRank(p, RankingType.HPS)).Reverse().ToList();
-            } else {
+        public void SortByHPS()
+        {
+            if (currentSort != "HPS")
+            {
+                players = players.OrderBy(p => GetAverageRank(p, RankingType.HPS)).Reverse().ToList();
+            }
+            else
+            {
                 players.Reverse();
             }
             currentSort = "HPS";

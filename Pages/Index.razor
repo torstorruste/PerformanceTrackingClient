@@ -15,6 +15,12 @@
         <option>Healing</option>
         <option>Ranking</option>
     </select>
+
+    <select @onchange="EncounterTypeChanged">
+        <option>Both</option>
+        <option>Progress</option>
+        <option>Farm</option>
+    </select>
 }
 
 @if(players!=null) {
