@@ -165,7 +165,7 @@ namespace PerformanceClient.Pages
                 Console.WriteLine($"Sorting by {header}");
 
                 players = players.OrderBy(p=>GetValuePerEncounter(GetStatistics(p.Id), header))
-                .ThenBy(p=>GetValue(GetStatistics(p.Id), header)).ToList();
+                .ThenBy(p=>GetValue(GetStatistics(p.Id), header)).Reverse().ToList();
             } else {
                 players.Reverse();
             }
@@ -185,7 +185,7 @@ namespace PerformanceClient.Pages
 
         public void SortByFarm() {
             if(currentSort!="Farm") {
-                players = players.OrderBy(p=>GetValue(GetStatistics(p.Id), "Farm")).ToList();
+                players = players.OrderBy(p=>GetValue(GetStatistics(p.Id), "Farm")).Reverse().ToList();
             } else {
                 players.Reverse();
             }
@@ -195,11 +195,31 @@ namespace PerformanceClient.Pages
 
         public void SortByProgress() {
             if(currentSort!="Progress") {
-                players = players.OrderBy(p=>GetValue(GetStatistics(p.Id), "Progress")).ToList();
+                players = players.OrderBy(p=>GetValue(GetStatistics(p.Id), "Progress")).Reverse().ToList();
             } else {
                 players.Reverse();
             }
             currentSort = "Progress";
+            StateHasChanged();
+        }
+
+        public void SortByDPS() {
+            if(currentSort!="DPS") {
+                players = players.OrderBy(p=>GetAverageRank(p, RankingType.DPS)).Reverse().ToList();
+            } else {
+                players.Reverse();
+            }
+            currentSort = "DPS";
+            StateHasChanged();
+        }
+
+        public void SortByHPS() {
+            if(currentSort!="HPS") {
+                players = players.OrderBy(p=>GetAverageRank(p, RankingType.HPS)).Reverse().ToList();
+            } else {
+                players.Reverse();
+            }
+            currentSort = "HPS";
             StateHasChanged();
         }
     }

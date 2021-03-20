@@ -24,8 +24,8 @@
             <th colspan="2" @onclick="()=>Sort(header)">@header</th>
         }
         @if(MeasureType==Model.MeasureType.RANKING) {
-            <th colspan="3">DPS</th>
-            <th colspan="3">HPS</th>
+            <th colspan="3" @onclick="SortByDPS">DPS</th>
+            <th colspan="3" @onclick="SortByHPS">HPS</th>
         }
         </tr>
         <tr><th colspan="4"></th>
