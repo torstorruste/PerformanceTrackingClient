@@ -51,7 +51,7 @@ namespace PerformanceClient.Pages
             {
                 if (data.Player.Id == playerId)
                 {
-                    Console.WriteLine($"Found data for player {data.Player.Name}");
+                    Console.WriteLine($"Found data for player {data.Player.Name} ({data.Player.Class})");
                     return data;
                 }
             }
@@ -145,7 +145,7 @@ namespace PerformanceClient.Pages
             StateHasChanged();
         }
 
-        public async void MeasureChanged(ChangeEventArgs e)
+        public void MeasureChanged(ChangeEventArgs e)
         {
             MeasureType = (MeasureType)Enum.Parse(typeof(MeasureType), e.Value.ToString().ToUpper());
 

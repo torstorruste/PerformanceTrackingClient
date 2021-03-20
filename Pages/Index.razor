@@ -19,7 +19,7 @@
 
 @if(players!=null) {
     <table>
-        <tr><th>Name</th><th>Farm</th><th>Progress</th>
+        <tr><th colspan="2">Name</th><th>Farm</th><th>Progress</th>
         @foreach(var header in GetHeaders()) {
             <th colspan="2">@header</th>
         }
@@ -28,7 +28,7 @@
             <th colspan="3">HPS</th>
         }
         </tr>
-        <tr><th></th><th></th><th></th>
+        <tr><th colspan="4"></th>
         @foreach(var header in GetHeaders()) {
             <th>Total</th>
             <th>Per fight</th>
@@ -43,9 +43,12 @@
         }
         </tr>
     @foreach(var player in players) {
+        @if(player.Class!="UNKNOWN") {
         var statistics = GetStatistics(player.Id);
         if(statistics != null && statistics.Data != null && statistics.Data.ContainsKey("Farm")) {
-            <tr><td>@player.Name</td>
+            <tr>
+            <td><img src="images/classes/@(player.Class.ToLower()).png" width="20px" height="20px"></td>
+            <td class="@(player.CssClass())">@player.Name</td>
             <td>@GetValue(statistics, "Farm")</td>
             <td>@GetValue(statistics, "Progress")</td>
             @foreach(var header in GetHeaders()) {
@@ -67,6 +70,7 @@
             }
             
             </tr>
+        }
         }
     }
     </table>

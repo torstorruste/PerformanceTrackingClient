@@ -1,0 +1,107 @@
+@font-face {
+    font-family: "CustomFont";
+    src: url("../../font/AvantGarde.ttf")}
+
+html, body {
+    font-family: "CustomFont";
+    background-color: #272727;
+}
+
+app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-row {
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+}
+
+td, li, th {
+    color: white;
+    padding-right: 3px;
+}
+
+.instance-name h4 {
+    color: white !important;
+}
+
+.panel {
+    margin-left: 5px;
+    h4 {
+    color: white;
+    }
+}
+
+.mdc-button__ripple {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.nav-link {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    text-decoration: none;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    }
+
+.border {
+    border: none !important;
+}
+
+.main {
+    flex: 1;
+    background-size: cover;
+    background-position: top center;
+    h1 {
+        font-size: 2.5em;
+        color: #ff652f;
+    }
+    h2, h3,     h5 {
+        font-size: 1.5em;
+        color: #FFE400;
+    }
+    .panel-heading {
+        background-color: transparent;
+        color: white;
+        .form-text {
+            color: white;       
+        }
+    }
+        .ul {
+            color: white;
+        }
+        p {
+            color: white;
+        }
+    .top-row {
+        border-bottom: 1px solid #d6d5d5;
+        justify-content: flex-end;
+    }
+    .top-row > a, .top-row .btn-link {
+        white-space: nowrap;
+        margin-left: 1.5rem;
+    }
+    .top-row a:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.content {
+    padding-top: 1.1rem;
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid white;
+}
+
+td, th {
+    border: 1px solid white;
+}
