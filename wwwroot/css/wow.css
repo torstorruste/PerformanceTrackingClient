@@ -1,45 +1,104 @@
+.bgDeathknight {
+    color: #000000;
+    background-color: #Cf1F3B;
+}
+
 .Deathknight {
     color: #Cf1F3B;
+}
+
+.bgDemonhunter {
+    color: #000000;
+    background-color: #A330C9;
 }
 
 .Demonhunter {
     color: #A330C9;
 }
 
+.bgDruid {
+    color: #000000;
+    background-color: #FF7D0A;
+}
+
 .Druid {
     color: #FF7D0A;
+}
+
+.bgHunter {
+    color: #000000;
+    background-color: #A9D271;
 }
 
 .Hunter {
     color: #A9D271;
 }
 
+.bgMage {
+    color: #000000;
+    background-color: #40C7EB;
+}
 .Mage {
     color: #40C7EB;
+}
+
+.bgMonk {
+    color: #000000;
+    background-color: #00FF96;
 }
 
 .Monk {
     color: #00FF96;
 }
 
+.bgPaladin {
+    color: #000000;
+    background-color: #F58CBA;
+}
+
 .Paladin {
     color: #F58CBA;
+}
+
+.bgPriest {
+    color: #000000;
+    background-color: #FFFFFF;
 }
 
 .Priest {
     color: #FFFFFF;
 }
 
+.bgRogue {
+    color: #000000;
+    background-color: #FFF569;
+}
+
 .Rogue {
     color: #FFF569;
+}
+
+.bgShaman {
+    color: #000000;
+    background-color: #0070DE;
 }
 
 .Shaman {
     color: #0070DE;
 }
 
+.bgWarlock {
+    color: #000000;
+    background-color: #8787ED;
+}
+
 .Warlock {
     color: #8787ED;
+}
+
+.bgWarrior {
+    color: #000000;
+    background-color: #C79C6E;
 }
 
 .Warrior {
