@@ -4,7 +4,7 @@ namespace PerformanceClient.Model
         DEFENSIVE,
         MECHANIC,
         BASIC,
-        HEALING,
+        CONSUMABLE,
         ENCOUNTER,
         RANKING
     }
