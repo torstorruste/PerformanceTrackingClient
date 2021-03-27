@@ -52,27 +52,27 @@
         @if(player.Class!="UNKNOWN") {
         var statistics = GetStatistics(player.Id);
         if(statistics != null && statistics.Data != null && statistics.Data.ContainsKey("Farm")) {
-            <tr>
+            <tr class="bg@(player.CssClass())">
             <td><img src="images/classes/@(player.Class.ToLower()).png" width="20px" height="20px"></td>
-            <td class="@(player.CssClass())">@player.Name</td>
-            <td class="bg@(player.CssClass())">@GetValue(statistics, "Farm")</td>
-            <td class="bg@(player.CssClass())">@GetValue(statistics, "Progress")</td>
+            <td>@player.Name</td>
+            <td>@GetValue(statistics, "Farm")</td>
+            <td>@GetValue(statistics, "Progress")</td>
             @foreach(var header in GetHeaders()) {
                 @if(statistics.Data.ContainsKey(header)) {
-                    <td class="bg@(player.CssClass())">@GetValue(statistics, header)</td>
-                    <td class="bg@(player.CssClass())">@GetValuePerEncounter(statistics, header)</td>
+                    <td>@GetValue(statistics, header)</td>
+                    <td>@GetValuePerEncounter(statistics, header)</td>
                 } else {
-                    <td class="bg@(player.CssClass())"></td>
-                    <td class="bg@(player.CssClass())"></td>
+                    <td></td>
+                    <td></td>
                 }
             }
             @if(MeasureType==Model.MeasureType.RANKING) {
-                <td class="bg@(player.CssClass())">@GetMinRank(player, Model.RankingType.DPS)</td>
-                <td class="bg@(player.CssClass())">@GetAverageRank(player, Model.RankingType.DPS)</td>
-                <td class="bg@(player.CssClass())">@GetMaxRank(player, Model.RankingType.DPS)</td>
-                <td class="bg@(player.CssClass())">@GetMinRank(player, Model.RankingType.HPS)</td>
-                <td class="bg@(player.CssClass())">@GetAverageRank(player, Model.RankingType.HPS)</td>
-                <td class="bg@(player.CssClass())">@GetMaxRank(player, Model.RankingType.HPS)</td>
+                <td>@GetMinRank(player, Model.RankingType.DPS)</td>
+                <td>@GetAverageRank(player, Model.RankingType.DPS)</td>
+                <td>@GetMaxRank(player, Model.RankingType.DPS)</td>
+                <td>@GetMinRank(player, Model.RankingType.HPS)</td>
+                <td>@GetAverageRank(player, Model.RankingType.HPS)</td>
+                <td>@GetMaxRank(player, Model.RankingType.HPS)</td>
             }
             
             </tr>
