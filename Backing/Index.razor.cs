@@ -27,14 +27,18 @@ namespace PerformanceClient.Pages
 
         private List<Player> players;
         private Statistics statistics;
+        private Dictionary<int, PlayerStatistics> statisticsMap;
         private List<Boss> bosses;
         private List<Measure> measures;
         private List<Ranking> rankings;
+        private List<String> headers;
 
         public string BossId { get; set; } = "-1";
         public MeasureType MeasureType { get; set; } = MeasureType.BASIC;
 
         public EncounterType ET { get; set; } = EncounterType.BOTH;
+
+        public String SelectedClass = "ALLPLAYERS";
 
         private string currentSort = "Name";
 
@@ -45,41 +49,59 @@ namespace PerformanceClient.Pages
 
             players = await playerService.GetPlayers();
             statistics = await statisticsService.GetStatistics(ET);
+            CreateStatisticsMap();
+
             measures = await measureService.GetMeasures();
             rankings = await rankingService.GetRankings();
+
+            headers = DetermineHeaders();
+        }
+
+        private void CreateStatisticsMap()
+        {
+            statisticsMap = new Dictionary<int, PlayerStatistics>();
+            foreach (var playerStat in statistics.Data)
+            {
+                statisticsMap[playerStat.Player.Id] = playerStat;
+            }
         }
 
         public PlayerStatistics GetStatistics(int playerId)
         {
-            foreach (var data in statistics.Data)
+            if (statisticsMap.ContainsKey(playerId))
             {
-                if (data.Player.Id == playerId)
-                {
-                    return data;
-                }
+                return statisticsMap[playerId];
             }
 
-            Console.WriteLine($"Unable to find statistics for player {playerId}");
             return new PlayerStatistics();
         }
 
-        public List<String> GetHeaders()
-        {
-            return measures.Where(m => m.Type == MeasureType).Select(m => m.Name).Where(h => HasValue(h)).ToList();
+        public List<String> GetHeaders() {
+            return headers;
         }
 
-        public bool HasValue(String header)
+        public List<String> DetermineHeaders()
         {
-            foreach (var data in statistics.Data)
+            var currentPlayers = GetPlayers();
+            List<PlayerStatistics> currentStatistics = currentPlayers.Select(p=>GetStatistics(p.Id)).ToList();
+            return measures.Where(m => m.Type == MeasureType)
+                    .Where(m => HasValue(m.Name, currentStatistics))
+                    .Select(m => m.Name).ToList();
+        }
+
+        public bool HasValue(String header, List<PlayerStatistics> currentStatistics)
+        {
+            foreach (var statistics in currentStatistics)
             {
-                if (data.Data.ContainsKey(header)) return true;
+                if (HasValue(statistics, header)) return true;
             }
+
             return false;
         }
 
         public bool HasValue(PlayerStatistics playerStatistics, String header)
         {
-            return playerStatistics.Data.ContainsKey(header);
+            return playerStatistics != null && playerStatistics.Data != null && playerStatistics.Data.ContainsKey(header);
         }
 
         public int GetValue(PlayerStatistics playerStatistics, string header)
@@ -166,7 +188,9 @@ namespace PerformanceClient.Pages
             {
                 statistics = await statisticsService.GetStatistics(ET);
             }
+            CreateStatisticsMap();
             currentSort = "OldBoss";
+            headers = DetermineHeaders();
             StateHasChanged();
         }
 
@@ -174,6 +198,7 @@ namespace PerformanceClient.Pages
         {
             MeasureType = (MeasureType)Enum.Parse(typeof(MeasureType), e.Value.ToString().ToUpper());
 
+            headers = DetermineHeaders();
             StateHasChanged();
         }
 
@@ -190,7 +215,29 @@ namespace PerformanceClient.Pages
                 statistics = await statisticsService.GetStatistics(ET);
             }
 
+            headers = DetermineHeaders();
+            CreateStatisticsMap();
             StateHasChanged();
+        }
+
+        public void PlayerClassChanged(ChangeEventArgs e)
+        {
+            SelectedClass = e.Value.ToString().Replace(" ", "").ToUpper();
+
+            headers = DetermineHeaders();
+            StateHasChanged();
+        }
+
+        public List<Player> GetPlayers()
+        {
+            if (SelectedClass == "ALLPLAYERS")
+            {
+                return players;
+            }
+            else
+            {
+                return players.Where(p => p.Class.ToUpper() == SelectedClass).ToList();
+            }
         }
 
         public void Sort(String header)

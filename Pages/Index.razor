@@ -21,6 +21,22 @@
         <option>Progress</option>
         <option>Farm</option>
     </select>
+
+    <select @onchange="PlayerClassChanged">
+        <option>All players</option>
+        <option>Death Knight</option>
+        <option>Demon Hunter</option>
+        <option>Druid</option>
+        <option>Hunter</option>
+        <option>Mage</option>
+        <option>Monk</option>
+        <option>Paladin</option>
+        <option>Priest</option>
+        <option>Rogue</option>
+        <option>Shaman</option>
+        <optiona>Warlock</optiona>
+        <option>Warrior</option>
+    </select>
 }
 
 @if(players!=null) {
@@ -48,7 +64,7 @@
             <th>Max</th>
         }
         </tr>
-    @foreach(var player in players) {
+    @foreach(var player in GetPlayers()) {
         @if(player.Class!="UNKNOWN") {
         var statistics = GetStatistics(player.Id);
         if(statistics != null && statistics.Data != null && statistics.Data.ContainsKey("Farm")) {
