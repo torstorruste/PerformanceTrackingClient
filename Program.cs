@@ -8,11 +8,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PerformanceClient.Service;
+using System.Collections;
 
 namespace PerformanceClient
 {
     public class Program
     {
+        private static string BASE_URL = "performance.superhelt.org:8080";
+
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -23,7 +26,7 @@ namespace PerformanceClient
             builder.Services.AddScoped<IBossService, BossService>();
             builder.Services.AddScoped<IMeasureService, MeasureService>();
             builder.Services.AddScoped<IRankingService, RankingService>();
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:8080/performance/") });
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri($"http://{BASE_URL}/performance/") });
 
             await builder.Build().RunAsync();
         }
